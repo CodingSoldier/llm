@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Query, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from config.db_conf import get_db
-from crud import news
+from crud import news, news_cache
 
 # 创建APIRouter实例
 # tags用于swagger分组
@@ -16,7 +16,8 @@ router = APIRouter(prefix="/api/news", tags=["news"])
 
 @router.get("/categories")
 async def get_categories(db: AsyncSession = Depends(get_db), skip: int=0, limit: int=100):
-    categories = await news.get_categories(db, skip, limit)
+    # categories = await news.get_categories(db, skip, limit)
+    categories = await news_cache.get_categories(db, skip, limit)
     return {
         "code": 200,
         "message": "获取新闻分类成功",
