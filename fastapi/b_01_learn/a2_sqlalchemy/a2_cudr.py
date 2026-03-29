@@ -1,54 +1,8 @@
-import enum
-from datetime import date
-from datetime import datetime
-from decimal import Decimal
-from typing import Optional
+from sqlalchemy import select, func
+from sqlalchemy.orm import sessionmaker
 
-from sqlalchemy import DateTime
-from sqlalchemy import String, DECIMAL, Boolean, func, select, ForeignKey
-from sqlalchemy.orm import DeclarativeBase, sessionmaker, relationship
-from sqlalchemy.orm import Mapped, mapped_column
-
-
-class Base(DeclarativeBase):
-    # 所有的模型类，都有的属性和字段映射
-    create_time: Mapped[datetime] = mapped_column(DateTime, insert_default=func.now(), comment='记录的创建时间')
-    update_time: Mapped[datetime] = mapped_column(DateTime, insert_default=func.now(),  onupdate=func.now(), comment='记录的最后一次修改时间')
-
-class SexValue(enum.Enum):
-    """通过枚举，可以给一些属性（字段）设置预设值"""
-    MALE = '男'
-    FEMALE = '女'
-
-
-class Employee(Base):
-    """员工的模型类"""
-
-    __tablename__ = 't_emp'
-
-    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    name: Mapped[str] = mapped_column(String(40), name='emp_name', unique=True, nullable=False)
-
-    # DECIMAL 其中10代表总位数，2代表小数点后的位数
-    sal: Mapped[Decimal] = mapped_column(DECIMAL(10, 2), nullable=True, comment='员工的基本工资')
-    bonus: Mapped[int] = mapped_column(default=0, comment='员工的津贴和奖金')
-    is_leave: Mapped[bool] = mapped_column(Boolean, default=False,
-                                           comment='员工是否离职，True代表已经离职，False代表在职')
-    gender: Mapped[SexValue]
-    entry_date: Mapped[date] = mapped_column(insert_default=func.now(), nullable=False, comment='入职时间')
-
-
-    # 和部门表关联的外键
-    dept_id: Mapped[Optional[int]] = mapped_column(ForeignKey('t_dept.id'), nullable=True)
-    # 定义一个关联属性： 该员工所属的部门
-    dept: Mapped[Optional['Dept']] = relationship(back_populates='emp_list', cascade='save-update')
-
-    # # 定义一个和身份证关联的属性：idc
-    idc: Mapped[Optional['IdCard']] = relationship(back_populates='emp')
-
-    # 需要在Employee模型类中增加一个__str__函数
-    def __str__(self):
-        return f'{self.name}, {self.gender.value}, {self.sal}, {self.entry_date}, {self.bonus}'
+from a2_sqlalchemy.db_config import engine
+from models import Employee, SexValue, Dept, IdCard, User, Role
 
 
 if __name__ == '__main__':

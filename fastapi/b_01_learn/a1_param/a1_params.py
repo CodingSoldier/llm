@@ -1,16 +1,11 @@
 from datetime import date
-from email.policy import default
 from enum import Enum
-from pydoc import describe
 from typing import List, Annotated
 
 import pydantic
-from click.testing import Result
 from fastapi import APIRouter, Path, Body
 from fastapi.params import Query
 from pydantic import BaseModel, Field, field_validator
-from pyexpat.errors import messages
-from rich_toolkit.menu import ReturnValue
 
 a1 = APIRouter(prefix='/a1', tags=['接口a1'])
 
@@ -52,7 +47,7 @@ def delete_emp(emp_ids: List[int] = Query(default=[], description="员工ID")):
     return {"msg": "ok"}
 
 @a1.post("/emp", summary="添加员工")
-def delete_emp(name: str = Query(description="员工姓名", regex=r'^[a-zA-Z_]\w{5,15}$'),
+def delete_emp(name: str = Query(description="员工姓名", pattern=r'^[a-zA-Z_]\w{5,15}$'),
                age: int = Query(description="添加员工年龄", ge=3, lt=10)):
     print(name)
     print(age)

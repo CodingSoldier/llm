@@ -2,14 +2,16 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from a1_param.a1_params import a1
+from a3_cudr.routers.cudr_router import cudr
+# 导入所有模型类，确保 SQLAlchemy 关系能够正确配置
+import models
 
 app = FastAPI()
 
 # CORS
 origins = [
     "http://localhost:9528",
-    "http://127.0.0.1:9528",
-    'http://192.168.0.66:9528/',
+    "http://127.0.0.1:9528"
 ]
 app.add_middleware(
     CORSMiddleware,
@@ -20,6 +22,7 @@ app.add_middleware(
 )
 
 app.include_router(a1)
+app.include_router(cudr)
 
 # 把项目下的static目录作为静态文件的访问目录
 # app.mount('/static', StaticFiles(directory='static'), name='my_static')

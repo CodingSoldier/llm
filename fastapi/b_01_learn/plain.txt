@@ -1,0 +1,5 @@
+这是一个fastapi项目
+你需要
+- 在a3_cudr/routers/cudr_router.py新建一个新增Employee的post方法，把前端传过来的数据添加到t_emp表
+- 在a3_cudr/schemas/emp.py中新增EmpAddReq类，作为新增Employee方法的入参；新增EmpAddResp类，作为新增Employee方法的返回值；
+
